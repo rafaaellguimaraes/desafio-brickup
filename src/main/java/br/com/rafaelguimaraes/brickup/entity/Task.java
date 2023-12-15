@@ -1,10 +1,13 @@
 package br.com.rafaelguimaraes.brickup.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "tasks")
@@ -13,9 +16,28 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotBlank
 	private String title;
+	@NotBlank
 	private String description;
-	private Boolean completed;
+	private boolean completed;
+
+	public Task() {
+	}
+
+	public Task(Long id, @NotBlank String title, @NotBlank String description, boolean completed) {
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.completed = completed;
+	}
+
+	public Task(String title, String description, boolean completed) {
+    this.title = title;
+    this.description = description;
+		this.completed = completed;
+  }
+
 	public Long getId() {
 		return id;
 	}
@@ -39,5 +61,10 @@ public class Task {
 	}
 	public void setCompleted(Boolean completed) {
 		this.completed = completed;
+	}
+
+	@Override 
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(obj, this);
 	}
 }
