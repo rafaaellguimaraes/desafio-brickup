@@ -21,21 +21,24 @@ public class Task {
 	@NotBlank
 	private String description;
 	private boolean completed;
+	private String image;
 
 	public Task() {
 	}
 
-	public Task(Long id, @NotBlank String title, @NotBlank String description, boolean completed) {
+	public Task(Long id, @NotBlank String title, @NotBlank String description, boolean completed, String image) {
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.completed = completed;
+		this.image = image;
 	}
 
-	public Task(String title, String description, boolean completed) {
+	public Task(String title, String description, boolean completed, String image) {
     this.title = title;
     this.description = description;
 		this.completed = completed;
+		this.image = image;
   }
 
 	public Long getId() {
@@ -61,6 +64,12 @@ public class Task {
 	}
 	public void setCompleted(Boolean completed) {
 		this.completed = completed;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	@Override 

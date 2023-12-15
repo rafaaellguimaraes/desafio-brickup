@@ -25,7 +25,7 @@ public class BrickupApplicationTests {
 
     @Test
     public void create() throws Exception {
-      Task task = new Task(null, "Test Task", "Teste task description.", false);
+      Task task = new Task(null, "Test Task", "Teste task description.", false, "base64image");
 
       mvc.perform(MockMvcRequestBuilders.post("/api/tasks")
         .contentType(MediaType.APPLICATION_JSON)
@@ -35,7 +35,7 @@ public class BrickupApplicationTests {
 
     @Test
     public void update() throws Exception {
-        Task task = new Task(null, "Test Task", "Teste task description.", false);
+        Task task = new Task(null, "Test Task", "Teste task description.", false, "base64image");
 
 				mvc.perform(MockMvcRequestBuilders.put("/api/tasks/1")
 					.contentType(MediaType.APPLICATION_JSON)
