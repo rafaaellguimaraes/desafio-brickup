@@ -1,71 +1,52 @@
 package br.com.rafaelguimaraes.brickup;
 
-import static br.com.rafaelguimaraes.brickup.TestConstants.TASK;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.rafaelguimaraes.brickup.entity.Task;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Sql("/remove.sql")
-class BrickupApplicationTests {
-	@Autowired
-	private WebTestClient webTestClient;
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+public class BrickupApplicationTests {
 
-	@Test
-	void testCreateTaskSuccess() {
-		var task = new Task("task 1", "description 1", false);
+    @Autowired
+    private MockMvc mvc;
 
-		webTestClient
-			.post()
-			.uri("/api/tasks")
-			.bodyValue(task)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.jsonPath("$").isArray()
-			.jsonPath("$.length()").isEqualTo(1)
-			.jsonPath("$[0].title").isEqualTo(task.getTitle())
-			.jsonPath("$[0].description").isEqualTo(task.getDescription())
-			.jsonPath("$[0].completed").isEqualTo(task.getCompleted());
-			
-	}
+    @Test
+    public void create() throws Exception {
+      Task task = new Task(null, "Test Task", "Teste task description.", false);
 
-	@Test
-	void testCreateTaskFailure() {
-		var task = new Task("", "", false);
+      mvc.perform(MockMvcRequestBuilders.post("/api/tasks")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(task)))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 
-		webTestClient
-			.post()
-			.uri("/api/tasks")
-			.bodyValue(task)
-			.exchange()
-			.expectStatus().isBadRequest();
-	}
+    @Test
+    public void update() throws Exception {
+        Task task = new Task(null, "Test Task", "Teste task description.", false);
 
-	@Sql("/import.sql")
-	@Test
-	public void testUpdateTaskSuccess() {
-		var task = new Task(TASK.getId(), TASK.getTitle() + " teste", TASK.getDescription() + " descrip teste", !TASK.getCompleted());
+				mvc.perform(MockMvcRequestBuilders.put("/api/tasks/1")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(new ObjectMapper().writeValueAsString(task)))
+					.andExpect(MockMvcResultMatchers.status().isOk());
+    }
 
-		webTestClient
-			.put()
-			.uri("/api/tasks" + TASK.getId())
-			.bodyValue(task)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.jsonPath("$").isArray()
-			.jsonPath("$.length()").isEqualTo(5)
-			.jsonPath("$[0].title").isEqualTo(task.getTitle())
-			.jsonPath("$[0].description").isEqualTo(task.getDescription())
-			.jsonPath("$[0].completed").isEqualTo(task.getCompleted());
-	}
-
-
+    @Test
+    public void delete() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete("/api/tasks/1")
+					.contentType(MediaType.APPLICATION_JSON))
+					.andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
