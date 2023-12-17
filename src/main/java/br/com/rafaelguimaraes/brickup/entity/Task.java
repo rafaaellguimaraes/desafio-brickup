@@ -2,6 +2,7 @@ package br.com.rafaelguimaraes.brickup.entity;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class Task {
 	@NotBlank
 	private String description;
 	private boolean completed;
+	@Column(columnDefinition = "TEXT")
 	private String image;
 
 	public Task() {
