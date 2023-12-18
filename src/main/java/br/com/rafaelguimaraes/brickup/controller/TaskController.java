@@ -44,5 +44,10 @@ public class TaskController {
 	List<Task> delete(@PathVariable("id") Long id) {
 		return taskService.delete(id);
 	}
+
+	@PutMapping("/complete/{id}")
+	List<Task> completeTask(@PathVariable("id") Long id) {
+		return taskService.completeTask(id);
+	}
 	
 }

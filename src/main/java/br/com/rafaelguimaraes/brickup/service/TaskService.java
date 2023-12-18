@@ -23,7 +23,7 @@ public class TaskService {
 	}
 
 	public List<Task> list() {
-		Sort sort = Sort.by("completed").descending().and(Sort.by("title").ascending());
+		Sort sort = Sort.by("completed").ascending().and(Sort.by("title").ascending());
 		return taskRepository.findAll(sort);
 	}
 
@@ -43,6 +43,20 @@ public class TaskService {
 
 	public List<Task> delete(Long id) {
 		taskRepository.deleteById(id);
+		return list();
+	}
+
+	public List<Task> completeTask(Long id) {
+		taskRepository.findById(id).ifPresentOrElse((task) -> {
+			task.setCompleted(true);
+			taskRepository.save(task);
+		}, () -> {
+			try {
+				throw new BadRequestException("Task %d não existe! ".formatted(id));
+			} catch (BadRequestException e) {
+				e.printStackTrace();
+			}
+		});
 		return list();
 	}
 }
